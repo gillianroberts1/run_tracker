@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Calendar from "./Calendar";
+import AutoTracker from "./AutoTracker";
 
 const RecordRun = () => {
   const [distance, setDistance] = useState("");
@@ -8,8 +9,12 @@ const RecordRun = () => {
   return (
     <>
       <p>RecordRun</p>
-      <h2>Select a Date</h2>
+      {/* Manual input    */}
+      <h2>Select a date and start time</h2>
       <Calendar />
+
+      {/* auto log */}
+      <AutoTracker />
     </>
   );
 };
