@@ -5,17 +5,17 @@ import "react-datepicker/dist/react-datepicker.css";
 
 // import "react-datepicker/dist/react-datepicker-cssmodules.css";
 
-const Calendar = () => {
-  const [date, setDate] = useState(new Date());
+const Calendar = ({ startDate, handleCalendarChange }) => {
   return (
     <DatePicker
       showIcon
-      selected={date}
-      onChange={(date) => setDate(date)}
+      selected={startDate}
+      onChange={(date) => handleCalendarChange(date)}
       showTimeSelect
       timeIntervals={15}
       dateFormat="dd/MM/yyyy h:mm aa"
     />
+    
   );
 };
 

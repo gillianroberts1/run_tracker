@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import Calendar from "./Calendar";
+import TimeSelector from './TimePicker';
 
 const RecordRun = () => {
   const [distance, setDistance] = useState("");
   const [startDate, setStartDate] = useState(new Date());
-  const [startTime, setStartTime] = useState(null);
+  const [startTime, setStartTime] = useState(new Date());
   const [totalTime, setTotalTime] = useState(0);
   const [timerRunning, setTimerRunning] = useState(false);
   const [loggedRuns, setLoggedRuns] = useState([]);
@@ -37,7 +38,7 @@ const RecordRun = () => {
       handleStop();
       setTotalTime(0);
       setDistance("");
-      // const endTime = new Date();
+
       const runData = {
         date: startDate.toLocaleDateString(),
         startTime: startTime.toLocaleTimeString(),
@@ -48,8 +49,11 @@ const RecordRun = () => {
     }
   };
 
-  // const handleManualLog = () => {
+const handleCalendarChange = (date) => {
+setStartDate(date)
+setStartTime(date)
 
+}
   // }
 
   const addRunData = (runData) => {
@@ -59,14 +63,20 @@ const RecordRun = () => {
     setLoggedRuns([...loggedRuns, runData]);
   };
 
+  const hours = Math.floor(totalTime / 3600);
+  const minutes = Math.floor((totalTime % 3600) / 60);
+  const seconds = totalTime % 60;
+  
+  const formattedTime = `${hours < 10 ? "0" + hours : hours}:${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
+    
+
   return (
     <div className="run-container">
       <h2>Run Tracker</h2>
 
       <div className="timer">
         <p>
-          Total Time: {Math.floor(totalTime / 60)} minutes {totalTime % 60}{" "}
-          seconds
+          Total Time: {formattedTime} 
         </p>
       </div>
       <div className="stop-clock">
@@ -88,10 +98,24 @@ const RecordRun = () => {
       </div>
       <div className="manual-log">
         <p>Manual Log</p>
-        <Calendar />
+        <p>Enter time mm:ss</p>
+        {/* <TimeSelector /> */}
+        {/* <input
+          className="manual-time"
+          value={formattedTime}
+          label="Time"
+          placeholder="mm:ss"
+          onChange={(e) => {
+            setTotalTime(e.target.value);
+          }}
+        /> */}
+        <br />
+        <br />
+
+        <Calendar  startDate={startDate} handleCalendarChange={handleCalendarChange} />
       </div>
       <br></br>
-      
+
       <br></br>
       <button onClick={handleLog}>Log Run</button>
     </div>
