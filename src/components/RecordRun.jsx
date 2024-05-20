@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import Calendar from "./Calendar";
-import TimeSelector from './TimePicker';
 import DisplayRuns from "./DisplayRuns";
 
 const RecordRun = () => {
@@ -8,6 +7,9 @@ const RecordRun = () => {
   const [startDate, setStartDate] = useState(new Date());
   const [startTime, setStartTime] = useState(new Date());
   const [totalTime, setTotalTime] = useState(0);
+  const [manualHours, setManualHours] = useState("");
+  const [manualMinutes, setManualMinutes] = useState("");
+  const [manualSeconds, setManualSeconds] = useState("");
   const [timerRunning, setTimerRunning] = useState(false);
   const [loggedRuns, setLoggedRuns] = useState([]);
 
@@ -37,87 +39,103 @@ const RecordRun = () => {
   const handleLog = () => {
     if (!timerRunning) {
       handleStop();
+      let finalTotalTime = totalTime;
+
+      if (!timerRunning && manualHours !== "" && manualMinutes !== "" && manualSeconds !== "") {
+        finalTotalTime = parseInt(manualHours) * 3600 + parseInt(manualMinutes) * 60 + parseInt(manualSeconds);
+      }
+
+      const formattedTime = formatTime(finalTotalTime);
+
       const runData = {
         date: startDate.toLocaleDateString(),
         startTime: startTime.toLocaleTimeString(),
-        totalTime: totalTime,
+        totalTime: finalTotalTime,
         totalTimeFormatted: formattedTime,
         distance: distance,
       };
       addRunData(runData);
-      setTotalTime(0);
-      setDistance("");
+      resetForm();
     }
   };
 
-const handleCalendarChange = (date) => {
-setStartDate(date)
-setStartTime(date)
-
-}
-  // }
+  const handleCalendarChange = (date) => {
+    setStartDate(date);
+    setStartTime(date);
+  };
 
   const addRunData = (runData) => {
-    
-    console.log("Adding run data to displayRuns:", runData);
     setLoggedRuns([...loggedRuns, runData]);
   };
 
-  const hours = Math.floor(totalTime / 3600);
-  const minutes = Math.floor((totalTime % 3600) / 60);
-  const seconds = totalTime % 60;
-  
-  const formattedTime = `${hours < 10 ? "0" + hours : hours}:${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
-    
+  const formatTime = (time) => {
+    const hours = Math.floor(time / 3600);
+    const minutes = Math.floor((time % 3600) / 60);
+    const seconds = time % 60;
+    return `${hours < 10 ? "0" + hours : hours}:${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
+  };
+
+  const resetForm = () => {
+    setTotalTime(0);
+    setDistance("");
+    setManualHours("");
+    setManualMinutes("");
+    setManualSeconds("");
+  };
+
+  const formattedTime = formatTime(totalTime);
 
   return (
-    <div className="run-container">
-      <h2>Run Tracker</h2>
+    <div className="run-container p-4">
+      <h2 className="text-xl font-bold mb-4">Run Tracker</h2>
 
-      <div className="timer">
-        <p>
-          Total Time: {formattedTime} 
-        </p>
+      <div className="timer mb-4">
+        <p className="text-lg">Total Time: {formattedTime}</p>
       </div>
-      <div className="stop-clock">
-        <button onClick={handleStart}>Start</button>
-        <button onClick={handleStop}>Stop</button>
+      <div className="stop-clock mb-4">
+        <button className="bg-blue-500 text-white px-4 py-2 rounded mr-2" onClick={handleStart}>Start</button>
+        <button className="bg-red-500 text-white px-4 py-2 rounded" onClick={handleStop}>Stop</button>
       </div>
-      <br></br>
-      <div className="distance">
-        <p>Enter Distance</p>
+      <div className="distance mb-4">
+        <p className="mb-2">Enter Distance</p>
         <input
-          className="distance"
+          className="border p-2 rounded w-full"
           value={distance}
-          label="Distance"
-          placeholder="Distance(km)"
-          onChange={(e) => {
-            setDistance(e.target.value);
-          }}
+          placeholder="Distance (km)"
+          onChange={(e) => setDistance(e.target.value)}
         />
       </div>
-      <div className="manual-log">
-        <p>Manual Log</p>
-        <p>Enter time mm:ss</p>
-        {/* <TimeSelector /> */}
-        {/* <input
-          className="manual-time"
-          value={formattedTime}
-          label="Time"
-          placeholder="mm:ss"
-          onChange={(e) => {
-            setTotalTime(e.target.value);
-          }}
-        /> */}
-        <br />
-        <br />
-
-        <Calendar  startDate={startDate} handleCalendarChange={handleCalendarChange} />
+      <div className="manual-log mb-4">
+        <p className="mb-2">Manual Log</p>
+        <Calendar startDate={startDate} handleCalendarChange={handleCalendarChange} />
       </div>
-      <br></br>
-
-      <br></br>
-      <button onClick={handleLog}>Log Run</button>
+      <div className="manual-time mb-4">
+        <p className="mb-2">Enter Manual Total Time (hh:mm:ss)</p>
+        <div className="flex gap-2">
+          <input
+            type="number"
+            className="border p-2 rounded w-full"
+            value={manualHours}
+            placeholder="HH"
+            onChange={(e) => setManualHours(e.target.value)}
+          />
+          <input
+            type="number"
+            className="border p-2 rounded w-full"
+            value={manualMinutes}
+            placeholder="MM"
+            onChange={(e) => setManualMinutes(e.target.value)}
+          />
+          <input
+            type="number"
+            className="border p-2 rounded w-full"
+            value={manualSeconds}
+            placeholder="SS"
+            onChange={(e) => setManualSeconds(e.target.value)}
+          />
+        </div>
+      </div>
+      <button className="bg-green-500 text-white px-4 py-2 rounded" onClick={handleLog}>Log Run</button>
 
       <DisplayRuns loggedRuns={loggedRuns} />
     </div>
