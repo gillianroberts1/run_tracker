@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Calendar from "./Calendar";
 import DisplayRuns from "./DisplayRuns";
+import Request from "../helpers/request";
 
 const RecordRun = () => {
   const [distance, setDistance] = useState("");
@@ -12,6 +13,12 @@ const RecordRun = () => {
   const [manualSeconds, setManualSeconds] = useState("");
   const [timerRunning, setTimerRunning] = useState(false);
   const [loggedRuns, setLoggedRuns] = useState([]);
+
+  useEffect(() => {
+    // Fetch runs from the database when the component mounts
+    const request = new Request();
+    request.get().then((runs) => setLoggedRuns(runs));
+  }, []);
 
   useEffect(() => {
     let timer = null;
@@ -50,10 +57,15 @@ const RecordRun = () => {
       const runData = {
         date: startDate.toLocaleDateString(),
         startTime: startTime.toLocaleTimeString(),
-        totalTime: finalTotalTime,
+        // totalTime: finalTotalTime,
         totalTimeFormatted: formattedTime,
         distance: distance,
       };
+      const request = new Request();
+      request.post('http://localhost:9000/api/runs', runData)
+      .then(() => {
+        console.log(runData)
+      })
       addRunData(runData);
       resetForm();
     }
