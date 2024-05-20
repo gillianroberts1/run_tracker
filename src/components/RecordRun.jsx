@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Calendar from "./Calendar";
 import TimeSelector from './TimePicker';
+import DisplayRuns from "./DisplayRuns";
 
 const RecordRun = () => {
   const [distance, setDistance] = useState("");
@@ -36,16 +37,16 @@ const RecordRun = () => {
   const handleLog = () => {
     if (!timerRunning) {
       handleStop();
-      setTotalTime(0);
-      setDistance("");
-
       const runData = {
         date: startDate.toLocaleDateString(),
         startTime: startTime.toLocaleTimeString(),
-        totalTime,
-        distance,
+        totalTime: totalTime,
+        totalTimeFormatted: formattedTime,
+        distance: distance,
       };
       addRunData(runData);
+      setTotalTime(0);
+      setDistance("");
     }
   };
 
@@ -57,8 +58,7 @@ setStartTime(date)
   // }
 
   const addRunData = (runData) => {
-    // Here, you can write code to add the runData to the displayRuns file
-    // For simplicity, let's just log it to the console for now
+    
     console.log("Adding run data to displayRuns:", runData);
     setLoggedRuns([...loggedRuns, runData]);
   };
@@ -118,6 +118,8 @@ setStartTime(date)
 
       <br></br>
       <button onClick={handleLog}>Log Run</button>
+
+      <DisplayRuns loggedRuns={loggedRuns} />
     </div>
   );
 };
