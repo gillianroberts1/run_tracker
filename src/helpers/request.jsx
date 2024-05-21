@@ -9,7 +9,7 @@ class Request {
     return fetch(`${baseURL}/${id}`).then((res) => res.json());
   }
 
-  post(baseURL, payload) {
+  post(payload) {
     return fetch(baseURL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

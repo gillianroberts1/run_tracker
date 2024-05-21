@@ -20,8 +20,6 @@ const RecordRun = () => {
     height: 0,
   });
 
-  const request = new Request();
-
   useEffect(() => {
     // Fetch runs from the database when the component mounts
     const request = new Request();
@@ -84,15 +82,16 @@ const RecordRun = () => {
       });
 
       const request = new Request();
-      request.post("http://localhost:9000/api/runs", runData).then(() => {
+      request.post(runData).then((response) => {
         console.log(runData);
-        addRunData(runData);
+        addRunData({ ...runData, _id: response.insertedId }); // Ensure the new run gets added to the state with its new ID
         resetForm();
         setShowConfetti(true);
         setTimeout(() => setShowConfetti(false), 8000); // Confetti for 5 seconds
       });
     }
   };
+
   const handleCalendarChange = (date) => {
     setStartDate(date);
     setStartTime(date);
@@ -103,14 +102,13 @@ const RecordRun = () => {
   };
 
   const handleDelete = (id) => {
-    const confirmed = window.confirm("Are you sure you want to delete this run?");
-    if (confirmed) {
+    if (window.confirm("Are you sure you want to delete this run?")) {
+      const request = new Request();
       request.delete(id).then(() => {
-        setLoggedRuns(loggedRuns.filter(run => run._id !== id));
+        setLoggedRuns(loggedRuns.filter((run) => run._id !== id));
       });
     }
   };
-
 
   const formatTime = (time) => {
     const hours = Math.floor(time / 3600);
