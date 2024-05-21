@@ -52,18 +52,18 @@ const RecordRun = () => {
   const handleLog = () => {
     if (!timerRunning) {
       handleStop();
+      // take time from totalTime state set via timer
       let finalTotalTime = totalTime;
 
       if (
         !timerRunning &&
-        manualHours !== "" &&
-        manualMinutes !== "" &&
-        manualSeconds !== ""
+        // at least one manual input has a value
+        (manualHours !== "" || manualMinutes !== "" || manualSeconds !== "")
       ) {
-        finalTotalTime =
-          parseInt(manualHours) * 3600 +
-          parseInt(manualMinutes) * 60 +
-          parseInt(manualSeconds);
+        const hours = manualHours ? parseInt(manualHours) * 3600 : 0;
+        const mins = manualMinutes ? parseInt(manualMinutes) * 60 : 0;
+        const seconds = manualSeconds ? parseInt(manualSeconds) : 0;
+        finalTotalTime = hours + mins + seconds;
       }
 
       const formattedTime = formatTime(finalTotalTime);
