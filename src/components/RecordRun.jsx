@@ -20,6 +20,8 @@ const RecordRun = () => {
     height: 0,
   });
 
+  // let startTime = format(new Date(), "HH:mm");
+
   useEffect(() => {
     // Fetch runs from the database when the component mounts
     const request = new Request();
@@ -70,7 +72,9 @@ const RecordRun = () => {
 
       const runData = {
         date: startDate.toLocaleDateString(),
-        startTime: startTime.toLocaleTimeString(),
+        startTime: startTime.toLocaleTimeString("en-GB", {
+          timeStyle: "short",
+        }),
         // totalTime: finalTotalTime,
         totalTimeFormatted: formattedTime,
         distance: distance,
