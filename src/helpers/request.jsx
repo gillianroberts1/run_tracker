@@ -1,4 +1,6 @@
-const baseURL = "http://localhost:9000/api/runs";
+// const baseURL = "http://localhost:9000/api/runs";
+const baseURL = "https://run-tracker-backend.fly.dev/api/runs";
+
 
 class Request {
   get() {

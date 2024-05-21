@@ -7,7 +7,7 @@ const MainContainer = () => {
     <div>
       <Routes>
         <Route path='/' element={<RecordRun />} />
-        <Route path='/display' element={<DisplayRuns />} />
+        <Route path='/display' element={<DisplayRuns  />} />
 
       </Routes>
     </div>
