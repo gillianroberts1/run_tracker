@@ -1,4 +1,8 @@
+/* eslint-disable react/prop-types */
 const DisplayRuns = ({ loggedRuns, handleDelete }) => {
+
+  
+
   return (
     <div className="logged-runs">
       <h3>Logged Runs</h3>

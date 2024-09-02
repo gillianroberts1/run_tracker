@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import Calendar from "./Calendar";
-import DisplayRuns from "./DisplayRuns";
 import Request from "../helpers/request";
 import Confetti from "react-confetti";
 
@@ -105,14 +104,14 @@ const RecordRun = () => {
     setLoggedRuns([...loggedRuns, runData]);
   };
 
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this run?")) {
-      const request = new Request();
-      request.delete(id).then(() => {
-        setLoggedRuns(loggedRuns.filter((run) => run._id !== id));
-      });
-    }
-  };
+  // const handleDelete = (id) => {
+  //   if (window.confirm("Are you sure you want to delete this run?")) {
+  //     const request = new Request();
+  //     request.delete(id).then(() => {
+  //       setLoggedRuns(loggedRuns.filter((run) => run._id !== id));
+  //     });
+  //   }
+  // };
 
   const formatTime = (time) => {
     const hours = Math.floor(time / 3600);
@@ -217,7 +216,6 @@ const RecordRun = () => {
         Log Run
       </button>
 
-      <DisplayRuns loggedRuns={loggedRuns} handleDelete={handleDelete} />
     </div>
   );
 };
