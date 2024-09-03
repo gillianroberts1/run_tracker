@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Calendar from "./Calendar";
 import Request from "../helpers/request";
 import Confetti from "react-confetti";
+import { useNavigate } from "react-router-dom";
 
 const RecordRun = () => {
   const [distance, setDistance] = useState("");
@@ -20,6 +21,8 @@ const RecordRun = () => {
   });
 
   // let startTime = format(new Date(), "HH:mm");
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Fetch runs from the database when the component mounts
@@ -53,14 +56,9 @@ const RecordRun = () => {
   const handleLog = () => {
     if (!timerRunning) {
       handleStop();
-      // take time from totalTime state set via timer
       let finalTotalTime = totalTime;
 
-      if (
-        !timerRunning &&
-        // at least one manual input has a value
-        (manualHours !== "" || manualMinutes !== "" || manualSeconds !== "")
-      ) {
+      if (manualHours !== "" || manualMinutes !== "" || manualSeconds !== "") {
         const hours = manualHours ? parseInt(manualHours) * 3600 : 0;
         const mins = manualMinutes ? parseInt(manualMinutes) * 60 : 0;
         const seconds = manualSeconds ? parseInt(manualSeconds) : 0;
@@ -74,7 +72,6 @@ const RecordRun = () => {
         startTime: startTime.toLocaleTimeString("en-GB", {
           timeStyle: "short",
         }),
-        // totalTime: finalTotalTime,
         totalTimeFormatted: formattedTime,
         distance: distance,
       };
@@ -86,11 +83,25 @@ const RecordRun = () => {
 
       const request = new Request();
       request.post(runData).then((response) => {
-        console.log(runData);
-        addRunData({ ...runData, _id: response.insertedId }); // Ensure the new run gets added to the state with its new ID
+        // Update the state with the new run before navigating
+        const updatedRuns = [
+          ...loggedRuns,
+          { ...runData, _id: response.insertedId },
+        ];
+        setLoggedRuns(updatedRuns);
+
+
         resetForm();
         setShowConfetti(true);
-        setTimeout(() => setShowConfetti(false), 8000); // Confetti for 5 seconds
+        setTimeout(() => {
+          setShowConfetti(false);
+
+          navigate("/display");
+          window.location.reload();
+          console.log(loggedRuns);
+
+
+        }, 3000); // Confetti for 3 seconds
       });
     }
   };
@@ -100,17 +111,8 @@ const RecordRun = () => {
     setStartTime(date);
   };
 
-  const addRunData = (runData) => {
-    setLoggedRuns([...loggedRuns, runData]);
-  };
-
-  // const handleDelete = (id) => {
-  //   if (window.confirm("Are you sure you want to delete this run?")) {
-  //     const request = new Request();
-  //     request.delete(id).then(() => {
-  //       setLoggedRuns(loggedRuns.filter((run) => run._id !== id));
-  //     });
-  //   }
+  // const addRunData = (runData) => {
+  //   setLoggedRuns([...loggedRuns, runData]);
   // };
 
   const formatTime = (time) => {
@@ -215,7 +217,6 @@ const RecordRun = () => {
       >
         Log Run
       </button>
-
     </div>
   );
 };

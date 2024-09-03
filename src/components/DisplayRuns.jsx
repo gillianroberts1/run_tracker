@@ -1,7 +1,12 @@
 /* eslint-disable react/prop-types */
-const DisplayRuns = ({ loggedRuns, handleDelete }) => {
+import { useEffect, useState } from "react";
 
-  
+const DisplayRuns = ({ loggedRuns, handleDelete }) => {
+  const [runs, setRuns] = useState(loggedRuns);
+
+  useEffect(() => {
+    setRuns(loggedRuns);
+  }, [loggedRuns]);
 
   return (
     <div className="logged-runs">
@@ -17,7 +22,7 @@ const DisplayRuns = ({ loggedRuns, handleDelete }) => {
           </tr>
         </thead>
         <tbody>
-          {loggedRuns.map((run, index) => (
+          {runs.map((run, index) => (
             <tr key={index}>
               <td>{run.date}</td>
               <td>{run.startTime}</td>
