@@ -27,6 +27,8 @@ function App() {
   };
 
   return (
+    <div className="pt-24 md:pt-28">
+
     <Router>
       <NavBar />
       <Routes>
@@ -35,6 +37,7 @@ function App() {
         <Route path="/display" element={<DisplayRuns loggedRuns={loggedRuns} handleDelete={handleDelete} />} />
       </Routes>
     </Router>
+    </div>
   );
 }
 
