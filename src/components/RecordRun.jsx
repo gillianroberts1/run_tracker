@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Calendar from "./Calendar";
 import Request from "../helpers/request";
 import Confetti from "react-confetti";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const RecordRun = () => {
   const [distance, setDistance] = useState("");
@@ -22,7 +22,7 @@ const RecordRun = () => {
 
   // let startTime = format(new Date(), "HH:mm");
 
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Fetch runs from the database when the component mounts
@@ -86,11 +86,15 @@ const RecordRun = () => {
         addRunData({ ...runData, _id: response.insertedId });
         resetForm();
         setShowConfetti(true);
-        setTimeout(() => setShowConfetti(false), 3000);
+        setTimeout(() => {
+          setShowConfetti(false);
+          navigate("/display");
+          window.location.reload();
+          console.log(loggedRuns);
+        }, 3000); // Confetti for 3 seconds
       });
     }
   };
-
 
   const handleCalendarChange = (date) => {
     setStartDate(date);
