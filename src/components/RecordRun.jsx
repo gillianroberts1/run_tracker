@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Calendar from "./Calendar";
 import Request from "../helpers/request";
 import Confetti from "react-confetti";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 const RecordRun = () => {
   const [distance, setDistance] = useState("");
@@ -22,7 +22,7 @@ const RecordRun = () => {
 
   // let startTime = format(new Date(), "HH:mm");
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   useEffect(() => {
     // Fetch runs from the database when the component mounts
@@ -83,37 +83,24 @@ const RecordRun = () => {
 
       const request = new Request();
       request.post(runData).then((response) => {
-        // Update the state with the new run before navigating
-        const updatedRuns = [
-          ...loggedRuns,
-          { ...runData, _id: response.insertedId },
-        ];
-        setLoggedRuns(updatedRuns);
-
-
+        addRunData({ ...runData, _id: response.insertedId });
         resetForm();
         setShowConfetti(true);
-        setTimeout(() => {
-          setShowConfetti(false);
-
-          navigate("/display");
-          window.location.reload();
-          console.log(loggedRuns);
-
-
-        }, 3000); // Confetti for 3 seconds
+        setTimeout(() => setShowConfetti(false), 3000);
       });
     }
   };
+
 
   const handleCalendarChange = (date) => {
     setStartDate(date);
     setStartTime(date);
   };
 
-  // const addRunData = (runData) => {
-  //   setLoggedRuns([...loggedRuns, runData]);
-  // };
+  // eslint-disable-next-line no-unused-vars
+  const addRunData = (runData) => {
+    setLoggedRuns([...loggedRuns, runData]);
+  };
 
   const formatTime = (time) => {
     const hours = Math.floor(time / 3600);
